@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffffcf;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .profile-card {
+            background-color: #222;
+            color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: auto;
+        }
+
+        .card-content {
+            padding: auto;
+            text-align: center;
+        }
+
+        .profile-card h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logout-button,
+        .redeem-button,
+        .home-button,
+        .exchange-button,
+        .choose-file-button,
+        .save-button {
+            background-color: #ff4400;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover,
+        .redeem-button:hover,
+        .home-button:hover,
+        .exchange-button:hover,
+        .choose-file-button:hover,
+        .save-button:hover {
+            background-color: #ff5f26;
+        }
+
+        #profile-picture {
+            display: none;
+        }
+
+        .choose-file-button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .choose-file-button:hover {
+            background-color: #45a049;
+        }
+
+        .save-button {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .save-button:hover {
+            background-color: #005f6b;
+        }
+
+        .exchange-button {
+            background-color: #ff5e00;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .exchange-button:hover {
+            background-color: #ff5e00;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-card">
+       <center> <h2>Selamat Datang, <span id="username"></span>!</h2>
+        <p>Koin Anda: <span id="coin-count"></span></p>
+</center>
+        <div class="button-container">
+            <button onclick="goHome()" class="home-button">Home</button>
+            <button onclick="redeemCode()" class="redeem-button">Redeem Kode</button>
+            <button onclick="logout()" class="logout-button">Logout</button>
+        </div>
+
+        <hr>
+
+        <div class="card-content">
+            <h3>Member</h3>
+            <hr>
+            <label for="profile-picture" id="profile-picture-label" class="choose-file-button">Pilih Gambar</label>
+            <input type="file" id="profile-picture" style="display: none;">
+
+            <center>
+                <img id="preview-image" src="" alt="Preview" style="width: 50%; margin-top: 20px; display: none; border-radius: 100%; height: 160px;">
+            </center>
+
+            <button onclick="saveProfilePicture()" class="save-button">Simpan/Ganti Gambar</button>
+        </div>
+
+        <hr>
+<br>
+        <center>
+            <a href="penukaran.html" class="exchange-button">Tukar Koin</a>
+        </center>
+        <br>
+    </div>
+
+    <script>
+        // JavaScript functions go here
+
+        // Mendapatkan data pengguna dari local storage
+        var storedUser = JSON.parse(localStorage.getItem('user'));
+        // Menampilkan nama pengguna di halaman profil
+        document.getElementById('username').textContent = storedUser.name;
+
+        // Mendapatkan jumlah koin dari local storage, defaultnya 0 jika tidak ada
+        var coinCount = parseInt(localStorage.getItem('coins')) || 0;
+        document.getElementById('coin-count').textContent = coinCount;
+
+        function redeemCode() {
+    var redeemCodeInput = prompt('Masukkan kode redeem:');
+    var validCodes = ['ia', 'ib', 'ic', 'id', 'ie', 'if', 'ig', 'ih', 'ii', 'ij' ]; // Daftar kode redeem yang valid
+    var rewardCoins = 2;
+
+    // Mengambil daftar kode redeem yang sudah digunakan oleh pengguna dari local storage
+    var usedCodes = JSON.parse(localStorage.getItem('usedCodes')) || [];
+
+    // Memeriksa apakah kode redeem yang dimasukkan oleh pengguna valid dan belum digunakan sebelumnya
+    if (validCodes.includes(redeemCodeInput) && !usedCodes.includes(redeemCodeInput)) {
+        // Menambahkan jumlah koin ke localStorage
+        coinCount += rewardCoins;
+        localStorage.setItem('coins', coinCount);
+        document.getElementById('coin-count').textContent = coinCount;
+        
+        // Menandai bahwa kode redeem telah digunakan
+        usedCodes.push(redeemCodeInput);
+        localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
+
+        alert('Redeem berhasil! Anda mendapatkan ' + rewardCoins + ' koin.');
+    } else if (usedCodes.includes(redeemCodeInput)) {
+        alert('Anda sudah menggunakan kode redeem ini sebelumnya.');
+    } else {
+        alert('Kode redeem tidak valid. Silakan coba lagi.');
+    }
+}
+
+//perbatasan
+
+        function logout() {
+            // Menghapus data pengguna dan jumlah koin dari local storage                       
+            // Redirect ke halaman login setelah logout
+            window.location.href = 'login.html';
+        }
+
+        function goHome() {
+            // Redirect ke halaman utama (misalnya index.html)
+            window.location.href = 'Halaman/index.html';
+        }
+        
+        //perbatasan
+        
+        
+        function saveProfilePicture() {
+    var input = document.getElementById('profile-picture');
+    var previewImage = document.getElementById('preview-image');
+
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    reader.onloadend = function () {
+        // Menampilkan gambar pratinjau
+        previewImage.src = reader.result;
+        previewImage.style.display = 'block';
+
+        // Menyimpan gambar ke local storage (disimpan dalam bentuk base64)
+        var base64Image = reader.result.split(',')[1];
+        localStorage.setItem('profilePicture', base64Image);
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {
+        // Handle jika pengguna tidak memilih file
+        alert('Pilih file gambar terlebih dahulu.');
+    }
+}
+
+// Mengecek apakah ada gambar profil yang disimpan di local storage
+var storedProfilePicture = localStorage.getItem('profilePicture');
+if (storedProfilePicture) {
+    var previewImage = document.getElementById('preview-image');
+    previewImage.src = 'data:image/png;base64,' + storedProfilePicture;
+    previewImage.style.display = 'block';
+}
+
+        
+    </script>
+</body>
+
+</html>

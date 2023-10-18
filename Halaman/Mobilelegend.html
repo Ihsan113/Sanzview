@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobilegends</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: url('background.jpg') center/cover no-repeat, linear-gradient(to bottom, #292929, #101010);
+            color: white;
+            padding: 20px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header img {
+            width: 200px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .motivation-text {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            width: 300px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 3px solid #ff7e15;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #101010;
+        }
+
+        /* CSS styles for border when selected */
+        .card-selected {
+            border-color: #ff9340;
+            border-width: 2px;
+            box-shadow: 0 0 10px 2px #ff9340;
+        }
+
+        /* CSS styles for card transition */
+        .card {
+            /* properties... */
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .input-container {
+            text-align: left;
+        }
+
+        .input-container label,
+        .input-container input {
+            margin-bottom: 10px;
+        }
+
+        .input-container input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ff9340;
+            border-radius: 5px;
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+        .circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ff9340;
+            display: inline-block;
+            text-align: center;
+            line-height: 40px;
+        }
+
+        .card2,
+        .card3,
+        .card4 {
+            width: 300px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 3px solid #ff7e15;
+            border-radius: 5px;
+            /* Border yang lebih kecil */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #101010;
+        }
+
+        .product-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid orange;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .product-name {
+            flex: 1;
+        }
+
+        .price {
+            color: orange;
+        }
+
+        .qr-code {
+            width: 85%;
+            height: 65px;
+            border: 2px solid orange;
+            cursor: pointer;
+        }
+
+        .phone-input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ff9340;
+            border-radius: 5px;
+            background-color: #1a1a1a;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .buy-button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            color: black;
+            cursor: pointer;
+        }
+
+        .footer {
+            color: #ff9340;
+            text-align: center;
+        }
+        .header img {
+    width: 100px;
+    height: 100px; /* Sesuaikan tinggi gambar dengan kebutuhan Anda */
+    object-fit: cover; /* Pastikan gambar mencakup seluruh area tanpa mengubah rasio aspek */
+    border-radius: 50%; /* Membuat gambar menjadi bulat */
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        
+        <img src="https://i.ibb.co/59dVhxX/images-3.jpg" alt="Logo">
+        <h1>CasShop</h1>
+        <h3>Diamond Mobile legends</h3>
+    </div>
+
+    <div class="motivation-text">
+        "Keberhasilan dimulai dengan tekad dan kerja keras."
+    </div>
+
+    <div class="card">
+        <div class="input-container">
+            <h2><span class="circle">1</span> Masukkan Tujuan</h2>
+            <label for="user-id">User ID:</label>
+            <input type="text" id="user-id" placeholder="Masukkan User ID">
+            <label for="zone-id">Zone ID:</label>
+            <input type="text" id="zone-id" placeholder="Masukkan Zone ID">
+        </div>
+    </div>
+
+    <div class="card2">
+        <h2><span class="circle">2</span> Pilih Produk</h2>
+        <div id="product-list">
+            <!-- Daftar produk diamond -->
+        </div>
+    </div>
+<marquee>Mohon maaf untuk pilihan pembayaran cuma bisa pake QR Code Terimakasih..!</marquee> 
+<br>
+    <div class="card3">
+        <h2><span class="circle">3</span> Metode Pembayaran</h2>
+        <p>Pilih metode pembayaran Anda:</p>
+        <div class="qr-code">
+            <center>
+                <h3>QR Code</h3>
+            </center>
+        </div>
+    </div>
+
+    <div class="card4">
+        <h2><span class="circle">4</span> Konfirmasi Pesanan</h2>
+        <div class="input-container">
+            <label for="phone-number">Nomor Telepon:</label>
+            <input type="text" id="phone-number" class="phone-input" placeholder="Masukkan Nomor Telepon">
+            <button class="buy-button">Beli Sekarang</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 CasShop. All rights reserved.</p>
+    </div>
+
+    <script>
+        const products = [{
+                name: "MOBILE LEGENDS - 3 Diamond",
+                price: "Rp 2.500"
+            },
+            {
+                name: "MOBILE LEGENDS - 5 Diamond",
+                price: "Rp 6.900"
+            },
+            {
+                name: "MOBILE LEGENDS - 10 Diamond",
+                price: "Rp 10.000"
+            }
+            // Add more products if needed
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const productList = document.getElementById('product-list');
+            const paymentMethods = document.querySelectorAll('.qr-code');
+            const buyButton = document.querySelector('.buy-button');
+            const userIdInput = document.getElementById('user-id');
+            const zoneIdInput = document.getElementById('zone-id');
+            const phoneNumberInput = document.getElementById('phone-number');
+
+            let selectedProductId = null;
+            let selectedPaymentMethod = null;
+
+            // Render product list
+            products.forEach((product, index) => {
+                const productContainer = document.createElement('div');
+                productContainer.className = 'product-container';
+                productContainer.dataset.productId = index;
+
+                const productName = document.createElement('div');
+                productName.className = 'product-name';
+                productName.textContent = product.name;
+                productContainer.appendChild(productName);
+
+                const price = document.createElement('div');
+                price.className = 'price';
+                price.textContent = product.price;
+                productContainer.appendChild(price);
+
+                productList.appendChild(productContainer);
+            });
+
+            // Product click event listener
+            productList.addEventListener('click', function(event) {
+                const selectedProductContainer = event.target.closest('.product-container');
+                if (selectedProductContainer) {
+                    selectedProductId = parseInt(selectedProductContainer.dataset.productId);
+                }
+            });
+// Product click event listener
+productList.addEventListener('click', function(event) {
+    const selectedProductContainer = event.target.closest('.product-container');
+    if (selectedProductContainer) {
+        // Remove 'card-selected' class from all product containers
+        productList.querySelectorAll('.product-container').forEach(container => {
+            container.classList.remove('card-selected');
+        });
+
+        selectedProductId = parseInt(selectedProductContainer.dataset.productId);
+        // Add 'card-selected' class to the selected product container
+        selectedProductContainer.classList.add('card-selected');
+    }
+});
+
+// Payment method click event listener
+paymentMethods.forEach(function(paymentMethod, index) {
+    paymentMethod.addEventListener('click', function() {
+        // Remove 'card-selected' class from all payment methods
+        paymentMethods.forEach(method => {
+            method.classList.remove('card-selected');
+        });
+
+        selectedPaymentMethod = index;
+        // Add 'card-selected' class to the selected payment method
+        paymentMethod.classList.add('card-selected');
+    });
+});
+const motivasiKataKata = [
+  "|Keberhasilan dimulai dengan tekad dan kerja keras.",
+  "|Setiap langkah keberhasilan dimulai dengan langkah pertama.",
+  "|Kesuksesan adalah hasil dari kerja keras dan ketekunan.",
+  "|Jangan ragu untuk membeli produk kami di CasShop Karena aman dan terpercaya 😁",
+  // Tambahkan kata-kata motivasi lainnya di sini
+];
+
+// Fungsi untuk memilih kata-kata motivasi secara acak
+function getRandomMotivation() {
+  const randomIndex = Math.floor(Math.random() * motivasiKataKata.length);
+  return motivasiKataKata[randomIndex];
+}
+
+// Tampilkan kata-kata motivasi secara acak
+function displayRandomMotivation() {
+  const motivationTextElement = document.querySelector('.motivation-text');
+  motivationTextElement.textContent = getRandomMotivation();
+}
+
+// Tampilkan kata-kata motivasi pertama kali
+displayRandomMotivation();
+
+// Atur interval untuk mengubah kata-kata motivasi secara otomatis setiap beberapa detik (misalnya, setiap 5 detik)
+setInterval(displayRandomMotivation, 2500); // 5000 milidetik = 5 detik
+
+
+            // Payment method click event listener
+            paymentMethods.forEach(function(paymentMethod, index) {
+                paymentMethod.addEventListener('click', function() {
+                    selectedPaymentMethod = index;
+                });
+            });
+
+            // Buy button click event listener
+buyButton.addEventListener('click', function() {
+    const userId = userIdInput.value;
+    const zoneId = zoneIdInput.value;
+    const phoneNumber = phoneNumberInput.value;
+
+    if (selectedProductId !== null && selectedPaymentMethod !== null && userId && zoneId && phoneNumber) {
+        const selectedProduct = products[selectedProductId];
+        const productName = selectedProduct.name;
+        const productPrice = selectedProduct.price; // Mendapatkan harga produk
+
+        const paymentMethod = `Metode Pembayaran ${selectedPaymentMethod + 1}`; // Assuming payment methods are numbered
+
+                    // Construct message
+const message = `Halo ka, saya mau pesan Diamond Game. Berikut keterangan nya
+
+         Keterangan Pembeli
+--------------------------------
+1. User id: ${userId}.         
+--------------------------------
+2. Zone id: ${zoneId}.         
+--------------------------------
+3. Metode pembayaran: QR Code 
+--------------------------------
+4. Nomor telepon: ${phoneNumber}
+--------------------------------
+5. Jenis Pesanan: ${productName}
+--------------------------------
+6. Total harga: ${productPrice}
+--------------------------------
+
+Tolong minta kode pembayaran nya 
+ka Terimakasih..!
+--------------------------------
+      CasShop create by ©Sanz  
+`;
+
+
+                                        // Redirect to WhatsApp with the message
+                    window.location.href = `https://wa.me/+6283174042483?text=${encodeURIComponent(message)}`;
+                } else {
+                    alert('Mohon lengkapi semua informasi sebelum melanjutkan.');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

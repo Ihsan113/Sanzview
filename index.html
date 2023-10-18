@@ -1,0 +1,531 @@
+
+
+<!DOCTYPE html>
+<html lang="in">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chasshop</title>
+</head>
+  <style>
+    /* CSS untuk styling halaman */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color: #ff4400;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .slider-container {
+      max-width: 1200px;
+      margin: 0px;
+      padding: 0px;
+      position: relative;
+      overflow: hidden;
+      height: 250px
+    }
+
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .slide img {
+      width: 100%;
+      height:210px;
+    }
+
+    .slider-control {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .slider-control button {
+      background-color: #ff4400;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .slider-control button:hover {
+      background-color: #ff5f26;
+    }
+
+    .container {
+      max-width: auto;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .banner {
+      background-image: url('banner.jpg');
+      background-size: cover;
+      height: 300px;
+      margin-bottom: 20px;
+    }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .card {
+      width: calc(30% - 15px);
+      background-color: #363636f0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 11px;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .card h3 {
+      color: #fff;
+      margin-top: 10px;
+      margin-bottom: 0;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .footer {
+      background-color: #f55b29;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+
+    /* Tambahan CSS untuk sambutan card vertikal */
+    .card-container-vertical {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    .card-vertical {
+      width: 87%;
+      background-color: #3c3c3c;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .card-vertical p {
+      color: #fff;
+      margin: 8px;
+    }
+
+    /* CSS untuk tombol hamburger menu */
+    .hamburger {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .nav-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 998;
+      display: none;
+    }
+
+    .nav-container.show {
+      display: block;
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .nav-menu a {
+      display: block;
+      color: #fff;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-decoration: none;
+    }
+    .beli-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    .beli-button:hover {
+      background-color: #45a049;
+    }
+    
+.popup {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #494949;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.popup {
+  display: none;
+  /* atau menggunakan visibility: hidden; */
+}
+
+.popup.show {
+  display: block;
+  /* atau menggunakan visibility: visible; */
+}
+
+#searchNotFoundPopup img {
+  width: 80px; /* Ubah ukuran gambar sesuai kebutuhan */
+  height: auto; /* Biarkan tinggi otomatis menyesuaikan proporsi gambar */
+}
+
+/* CSS untuk elemen pencarian */
+#searchInput {
+  padding: 12px;
+  font-size: 18px;
+  border: 2px solid #2e2e2e;
+  border-radius: 25px;
+  margin-bottom: 20px;
+  width: 50%;
+  box-sizing: border-box;
+  outline: none;
+}
+
+/* CSS untuk tombol pencarian */
+#searchBtn {
+  padding: 15px 30px;
+  font-size: 14px;
+  background-color: #1d1d1d;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  outline: none;
+}
+
+#searchBtn:hover {
+  background-color: #ff1f00;
+}
+
+#searchBtn:active {
+  transform: scale(0.95);
+}
+
+
+#scrollToTopBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #007bff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+#scrollToTopBtn img {
+  width: 30px; /* Sesuaikan ukuran ikon dengan preferensi Anda */
+  height: 30px;
+}
+
+#scrollToTopBtn:hover {
+  background-color: #0056b3; /* Warna latar berubah saat tombol dihover */
+  outline: none;
+}
+
+
+
+
+  </style>
+  
+</head>
+<body>
+  <div class="header">
+    <h1>CasShop!</h1>
+    
+    <form onsubmit="searchProducts(); return false;">
+   <input type="text" id="searchInput" name="query" placeholder="Cari produk...">
+   
+   <button id="searchBtn" type="submit">Cari</button>
+
+   <button type="button" id="closeBtn" style="display:none;" onclick="closeSearchResults();">Tutup Pencarian</button>
+   
+  <div id="searchNotFoundPopup" class="popup">
+  <span class="close">&times;</span>
+  <img src="/Halaman/img/peringatan.jpg" alt="Image Description">
+  <p>Produk yang Anda cari tidak ditemukan.</p>
+</div>
+
+</form>
+
+<div id="searchResults"></div>
+
+
+
+<div id="scrollToTopBtn">
+  <h3>^</h3>
+</div>
+
+
+  </div>
+<hr color="#777777">
+  <div class="slider-container">
+    <div class="slider">
+      <div class="slide">
+          
+     <img src="https://i.ibb.co/drmMSM3/images-4.jpg"/>
+      </div>
+      <div class="slide">
+  <img src="https://i.ibb.co/bF64dN8/images-5.jpg"/>
+      </div>
+      <div class="slide">
+        <img src="https://i.ibb.co/1zVt00W/medium-banner-booyah-pass-85e50131a0.webp"/>
+      </div>
+    </div>
+    <div class="slider-control">
+      <button id="prevBtn">&#8249;</button>
+      <button id="nextBtn">&#8250;</button>
+    </div>
+    <hr color="#777777">
+  </div>
+
+
+  <div class="card-container-vertical">
+    <div class="card-vertical">
+      <h3>Selamat Datang Di CashShop!</h3>
+      <p>Nikmati pengalaman bermain game terbaik dengan berbagai pilihan game kami dan opsi top-up yang nyaman. Pilih dari judul-judul populer dan bersiaplah untuk meningkatkan perjalanan game Anda!</p>
+    </div>
+  </div>
+
+  <br>
+  <br>
+
+  <div class="card-container">
+    <div class="card">
+      <a href="Halaman/Mobilelegend.html"><img src="https://i.ibb.co/qdKMjg9/1412667036.jpg" alt="1412667036" border="0"></a>
+      <h3>Mobile legend</h3>
+    </div>
+    <div class="card">
+      <a href="https://sites.google.com/view/sanzcom/free-fire-form"><img src="https://i.ibb.co/wh6sRrN/090110200-1655708618-Logo-Baru-Free-Fire.jpg" alt="090110200-1655708618-Logo-Baru-Free-Fire" border="0"></a>
+      <h3>Free Fire</h3>
+    </div>
+    <div class="card">
+      <a href="#"><img src="https://i.ibb.co/ygmrfPx/PUBG-MOBILE.png" alt="PUBG-MOBILE" border="0"></a>
+      <h3>PUBG</h3>
+    </div>
+    <div class="card">
+      <a href="#"><img src="https://i.ibb.co/XLK8KZ0/valorant-jett-and-phoenix-wallpaper-b.jpg" alt="valorant-jett-and-phoenix-wallpaper-b" border="0"></a>
+      <h3>Valorant</h3>
+    </div>
+    <div class="card">
+      <a href="#"><img src="https://i.ibb.co/0Bc0XFm/2020060218360413655.png" alt="2020060218360413655" border="0"></a>
+      <h3>Gensin impact</h3>
+    </div>
+    <div class="card">
+      <a href="#"><img src="https://i.ibb.co/YQFhz6L/2228049507.jpg" alt="2228049507" border="0"></a>
+      <h3>Higgs Domino</h3>
+    </div>
+    <div class="card">
+      <a href="#"><img src="https://i.ibb.co/wh05Mfb/callofdragons-1661435616669.jpg" alt="callofdragons-1661435616669" border="0"></a>
+      <h3>Call Of Dragon</h3>
+    </div>
+    <div class="card">
+   <a href="#"><img src="https://i.ibb.co/y6DtbRc/icon-lords-mobile.png" alt="icon-lords-mobile" border="0"></a>
+      <h3>Lords Mobile</h3>
+    </div>
+    <div class="card">
+      <a href="#"><img src="https://i.ibb.co/dQvHQGJ/icon.png" alt="icon" border="0"></a>
+      <h3>Hyper Front</h3>
+    </div>
+  </div>
+
+  <div class="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="nav-container">
+    <div class="nav-menu">
+      <a href="/Halaman/login.html">Profil</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+
+  <br>
+  <br>
+
+  <div class="footer">
+    <p>&copy; 2023 CasShop. All rights reserved.</p>
+  </div>
+
+  <script>
+      //pencarian
+      function searchProducts() {
+  var input, filter, cards, card, title, i, txtValue;
+  input = document.getElementById('searchInput');
+  filter = input.value.toUpperCase();
+  cards = document.getElementsByClassName('card');
+  var searchNotFound = true; // Menandakan apakah hasil pencarian ditemukan atau tidak
+
+  for (i = 0; i < cards.length; i++) {
+    card = cards[i];
+    title = card.getElementsByTagName('h3')[0];
+    txtValue = title.textContent || title.innerText;
+    if (txtValue.toUpperCase().startsWith(filter)) {
+      card.style.display = '';
+      // Mengarahkan pengguna ke halaman game saat produk ditemukan
+      card.onclick = function() {
+        var link = this.getElementsByTagName('a')[0].href;
+        window.location.href = link;
+      };
+      searchNotFound = false; // Setel menjadi false jika hasil pencarian ditemukan
+    } else {
+      card.style.display = 'none';
+    }
+  }
+
+  // Tampilkan peringatan jika hasil pencarian tidak ditemukan
+  var searchNotFoundPopup = document.getElementById('searchNotFoundPopup');
+  if (searchNotFound) {
+    searchNotFoundPopup.classList.add('show');
+  } else {
+    searchNotFoundPopup.classList.remove('show');
+  }
+}
+
+const closeBtn = document.querySelector('.close');
+
+closeBtn.addEventListener('click', function() {
+  // Menghapus nilai input pencarian
+  document.getElementById('searchInput').value = '';
+  
+  // Memanggil fungsi pencarian untuk mengembalikan tampilan produk semula
+  searchProducts();
+  
+  // Menyembunyikan popup pencarian tidak ditemukan
+  var searchNotFoundPopup = document.getElementById('searchNotFoundPopup');
+  searchNotFoundPopup.classList.remove('show');
+});
+
+
+
+
+
+
+
+
+    const slider = document.querySelector('.slider');
+    const prevBtn = document.querySelector('#prevBtn');
+    const nextBtn = document.querySelector('#nextBtn');
+    const slideWidth = document.querySelector('.slide').clientWidth;
+    let slideCounter = 0;
+
+    prevBtn.addEventListener('click', () => {
+      if (slideCounter === 0) {
+        slideCounter = slider.children.length - 1;
+      } else {
+        slideCounter--;
+      }
+      slider.style.transform = `translateX(-${slideCounter * slideWidth}px)`;
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (slideCounter === slider.children.length - 1) {
+        slideCounter = 0;
+      } else {
+        slideCounter++;
+      }
+      slider.style.transform = `translateX(-${slideCounter * slideWidth}px)`;
+    });
+
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('active');
+      });
+    });
+
+    const hamburger = document.querySelector('.hamburger');
+    const navContainer = document.querySelector('.nav-container');
+
+    hamburger.addEventListener('click', () => {
+      navContainer.classList.toggle('show');
+    });
+    //perbatasan 
+    
+const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+scrollToTopBtn.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+
+  </script>
+</body>
+</html>

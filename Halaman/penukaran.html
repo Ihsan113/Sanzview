@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta tags dan judul (sama seperti sebelumnya) -->
+    
+
+    <style>
+        /* CSS untuk halaman penukaran koin */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffffcf;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .exchange-card {
+            background-color: #222;
+            color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 80%;
+            max-width: auto; /* Lebar maksimum card */
+        }
+
+        .coin-input,
+        .withdrawal-input {
+            margin-top: 10px;
+            padding: 8px;
+            width: 100%;
+            font-size: 16px;
+            box-sizing: border-box; /* Memastikan padding tidak menambah lebar input */
+        }
+
+        .exchange-button {
+            background-color: #ff5e00;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            width: 100%; /* Lebar tombol 100% dari parentnya */
+        }
+
+        .exchange-button:hover {
+            background-color: #ff6915;
+        }
+
+        .home-button {
+            background-color: #ff6915;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .home-button:hover {
+            background-color: #ff5e00;
+        }
+
+        #exchange-result,
+        .history-item {
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Bagian halaman penukaran koin -->
+
+    <div class="exchange-card">
+        <button onclick="goBack()" class="home-button">
+            <span style="background-color: #ff6915; font-size: 20px; margin-right: 10px;">←</span> Kembali ke Profil
+        </button>
+<hr>
+        <h2>Penukaran Koin</h2>
+        <p>Jumlah Koin Anda: <span id="coin-count"></span></p>
+        <label for="coin-input">Jumlah Koin yang Ingin Ditukarkan:</label>
+        <input type="number" id="coin-input" class="coin-input" min="0" step="10">
+        <label for="withdrawal-number">Nomor Tujuan Penarikan Saldo:</label>
+        <input type="text" id="withdrawal-number" class="withdrawal-input" required>
+        <label for="bank-name">Nama Bank/Ewallet:</label>
+        <input type="text" id="bank-name" class="withdrawal-input" required>
+        <hr>
+        <button onclick="exchangeCoins()" class="exchange-button">Tukar</button>
+        <div id="exchange-result"></div>
+        <div id="exchange-history"></div> <!-- Menampilkan riwayat penarikan -->
+    </div>
+
+    <!-- JavaScript untuk halaman penukaran koin -->
+    
+   <script src="https://cdn.emailjs.com/dist/email.min.js"></script> <script>
+        // Inisialisasi EmailJS dengan user ID Anda
+        emailjs.init('m_cJTc3CBeWJutcZS');
+
+        // Mendapatkan jumlah koin dari local storage
+        var coinCount = parseInt(localStorage.getItem('coins')) || 0;
+        document.getElementById('coin-count').textContent = coinCount;
+
+        function goBack() {
+            // Mengarahkan kembali ke halaman profil pengguna
+            window.location.href = 'profil.html';
+        }
+
+        function exchangeCoins() {
+            var coinInput = parseInt(document.getElementById('coin-input').value);
+            var withdrawalNumber = document.getElementById('withdrawal-number').value;
+            var bankName = document.getElementById('bank-name').value;
+            var exchangeResult = document.getElementById('exchange-result');
+            var exchangeButton = document.querySelector('.exchange-button');
+            var historyDiv = document.createElement("div");
+            historyDiv.classList.add("history-item");
+            var notes = '';
+
+            if (coinCount < 20 || coinInput <= 0 || coinInput % 20 !== 0) {
+                notes = 'Penukaran koin harus berjumlah kelipatan 20, tidak melebihi jumlah koin yang dimiliki, dan minimal 20 koin.';
+                exchangeButton.style.display = 'none';
+            } else {
+                var exchangedAmount = coinInput / 20;
+                var rupiahAmount = exchangedAmount * 1000;
+
+                coinCount -= coinInput;
+                localStorage.setItem('coins', coinCount);
+                document.getElementById('coin-count').textContent = coinCount;
+
+                // Menambahkan riwayat penarikan di bawah card
+                historyDiv.textContent = "Penukaran " + coinInput + " koin pada " + new Date().toLocaleString() + ". Dikirim ke: " + withdrawalNumber + " (Bank/Ewallet: " + bankName + ")";
+                var exchangeHistory = document.getElementById("exchange-history");
+                exchangeHistory.appendChild(historyDiv);
+
+                // Menyembunyikan tombol tukar jika koin kurang dari 20
+                if (coinCount < 20) {
+                    exchangeButton.style.display = 'none';
+                } else {
+                    exchangeButton.style.display = 'block';
+                }
+
+                // Mengirim email dengan informasi penukaran koin (contoh menggunakan EmailJS)
+                var emailSubject = "Penukaran Koin - Informasi Penukaran";
+                var emailBody = `Anda telah menukarkan ${coinInput} koin. Informasi penukaran:\n\nNomor Tujuan Penarikan Saldo: ${withdrawalNumber}\nNama Bank/Ewallet: ${bankName}\nJumlah yang diterima: ${rupiahAmount} IDR`;
+                sendEmail(emailSubject, emailBody);
+
+                // Menampilkan peringatan berhasil terkirim
+                alert("Email berhasil terkirim. Permintaan Anda sedang kami proses. Jumlah yang akan diterima: " + rupiahAmount + " IDR");
+            }
+
+            exchangeResult.textContent = notes;
+        }
+
+        function sendEmail(subject, body) {
+            // Mengirim email menggunakan JavaScript (contoh menggunakan EmailJS)
+            emailjs.send("service_k5d9xd7", "template_i7ittgf", {
+                subject: subject,
+                body: body,
+            })
+            .then(function(response) {
+                console.log("Email sent successfully:", response);
+            })
+            .catch(function(error) {
+                console.error("Email sending failed:", error);
+            });
+        }
+    </script>
+</body>
+
+</html>

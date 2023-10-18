@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #c8c8c8a2;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .signup-card {
+            max-width: 300px;
+            background-color: #222;
+            color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .signup-card h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .signup-card label,
+        .signup-card input,
+        .signup-card button {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .signup-card input {
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #222;
+        }
+
+        .signup-button {
+            background-color: #ff4400;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .signup-button:hover {
+            background-color: #ff5f26;
+        }
+        
+        .h3 { color: #ff4400; margin-bottom: 20px; }
+    .error-message {
+            color: #ff0000;
+            margin-top: 10px;
+        }
+         .text {
+            color: #131313cf;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+    </style>
+</head>
+
+<body>
+    
+    
+    <div class="text">
+        <center>
+            <h3>Halaman Login CasShop</h3>
+        </center>
+    <div class="signup-card">
+        <center>
+            <h2>Sign Up</h2>
+        </center>
+        <form id="signupForm">
+            <label for="name">Name:</label>
+            <br>
+            <input type="text" id="name" required><br><br>
+            <label for="username">Username:</label>
+            <input type="text" id="username" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" required><br><br>
+            <button type="button" class="signup-button" onclick="createAccount()">Create Account</button>
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        function createAccount() {
+            var name = document.getElementById('name').value;
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var errorMessage = document.getElementById('errorMessage');
+
+            if (name && username && password) {
+                // Simpan data akun ke local storage
+                var user = {
+                    name: name,
+                    username: username,
+                    password: password
+                };
+
+                localStorage.setItem('user', JSON.stringify(user));
+                alert('Account created successfully!');
+                window.location.href = 'login.html';
+            } else {
+                errorMessage.textContent = 'Harap lengkapi semua kolom.';
+            }
+        }
+    </script>
+</body>
+
+</html>

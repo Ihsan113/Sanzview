@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffffcf;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-card {
+            background-color: #222;
+            color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 85%;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .login-card h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-card form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-card label,
+        .login-card input,
+        .login-card button,
+        .login-card a {
+            margin-bottom: 10px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 240px;
+        }
+
+        .login-card input {
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #222;
+        }
+
+        .login-button {
+            background-color: #ff4400;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-button:hover {
+            background-color: #ff5f26;
+        }
+
+        .text {
+            color: #131313cf;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="text">
+        <center>
+            <h3>Halaman Login CasShop</h3>
+        </center>
+    </div>
+
+    <div class="login-card">
+        <div class="card-content">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" required><br><br>
+               <center> <p>
+                    Belum buat akun klik daftar untuk membuat akun
+                </p>
+                <a href="signup.html">Daftar Akun</a></center>
+                <br>
+                <button type="button" onclick="login()" class="login-button">Login</button>
+              <center> <div class="error-message" id="errorMessage"></div></center> 
+            </form>
+           
+        </div>
+    </div>
+<script>
+   function login() {
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+    var errorMessage = document.getElementById('errorMessage');
+
+    if (username && password) {
+        // Lakukan logika login di sini jika input valid
+        var storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser && username === storedUser.username && password === storedUser.password) {
+            alert('Login successful!');
+            // Redirect ke halaman profil pengguna setelah login berhasil
+            window.location.href = 'profil.html';
+        } else {
+            errorMessage.textContent = 'Username atau password salah. Silakan coba lagi.';
+        }
+    } else {
+        errorMessage.textContent = 'Harap masukkan username dan password.';
+    }
+}
+</script>
+</body>
+
+</html>
