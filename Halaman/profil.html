@@ -114,7 +114,11 @@
 
         .exchange-button:hover {
             background-color: #ff5e00;
-        }
+        }        
+        a.home-button {
+  text-decoration: none;
+}
+
     </style>
 </head>
 
@@ -124,7 +128,7 @@
         <p>Koin Anda: <span id="coin-count"></span></p>
 </center>
         <div class="button-container">
-            <button onclick="goHome()" class="home-button">Home</button>
+            <a href="https://bit.ly/3tETDK3" class="home-button">Home</a>
             <button onclick="redeemCode()" class="redeem-button">Redeem Kode</button>
             <button onclick="logout()" class="logout-button">Logout</button>
         </div>
@@ -199,10 +203,9 @@
             window.location.href = 'login.html';
         }
 
-        function goHome() {
+        
             // Redirect ke halaman utama (misalnya index.html)
-            window.location.href = 'Halaman/index.html';
-        }
+            
         
         //perbatasan
         
