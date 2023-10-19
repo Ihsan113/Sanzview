@@ -2,19 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penukaran</title>
+    <!-- Meta tags dan judul (sama seperti sebelumnya) -->
+    
 
     <style>
         /* CSS untuk halaman penukaran koin */
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffffffcf;
+            background-image: url('latar 3.jpg'); /* Ganti 'jpg' dengan nama file gambar Anda */
+    background-size: cover; /* Untuk memastikan gambar meliputi seluruh latar belakang */
+    background-repeat: no-repeat; /* Menghindari pengulangan gambar */
+    background-position: center center; /* Posisi gambar di tengah-tengah latar belakang */
+
             color: #fff;
             margin: 0;
             padding: 0;
             display: flex;
+            
+
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -25,8 +30,10 @@
             background-color: #222;
             color: #fff;
             border-radius: 10px;
+            border: 2px solid #ff6915;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: rgba(29, 29, 29, 0.7);
             padding: 20px;
             text-align: center;
             width: 80%;
@@ -35,9 +42,11 @@
 
         .coin-input,
         .withdrawal-input {
-            margin-top: 10px;
+            margin-top: 5px;
+            position: center;
             padding: 8px;
-            width: 100%;
+           
+            width: 80%;
             font-size: 16px;
             box-sizing: border-box; /* Memastikan padding tidak menambah lebar input */
         }
@@ -94,8 +103,13 @@
         <p>Jumlah Koin Anda: <span id="coin-count"></span></p>
         <label for="coin-input">Jumlah Koin yang Ingin Ditukarkan:</label>
         <input type="number" id="coin-input" class="coin-input" min="0" step="10">
+        <br>
+        <br>
         <label for="withdrawal-number">Nomor Tujuan Penarikan Saldo:</label>
+        
         <input type="text" id="withdrawal-number" class="withdrawal-input" required>
+        <br>
+        <br>
         <label for="bank-name">Nama Bank/Ewallet:</label>
         <input type="text" id="bank-name" class="withdrawal-input" required>
         <hr>

@@ -8,24 +8,35 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #c8c8c8a2;
+            
             color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            /* CSS */
+
+    background-image: url('latar.jpg'); /* Ganti 'namafilegambar.jpg' dengan nama file gambar Anda */
+    background-size: cover; /* Untuk memastikan gambar meliputi seluruh latar belakang */
+    background-repeat: no-repeat; /* Menghindari pengulangan gambar */
+    background-position: center center; /* Posisi gambar di tengah-tengah latar belakang */
+
+
         }
 
         .signup-card {
-            max-width: 300px;
-            background-color: #222;
-            color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
+    max-width: auto;
+    margin: 0 auto; /* Untuk menengahkan card */
+    background-color: rgba(29, 29, 29, 0.7); /* Menggunakan RGBA untuk transparansi (nilai Alpha: 0.7) */
+    color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ff6915;
+    padding: 10px;
+}
+
 
         .signup-card h2 {
             font-size: 24px;
@@ -35,12 +46,12 @@
         .signup-card label,
         .signup-card input,
         .signup-card button {
-            margin-bottom: 10px;
+            margin-bottom: 0px;
             font-size: 16px;
         }
 
         .signup-card input {
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #333;
             border-radius: 5px;
             background-color: #fff;
@@ -80,48 +91,130 @@
     
     <div class="text">
         <center>
-            <h3>Halaman Login CasShop</h3>
+           <h3 style="color: white; padding: 10px;">Halaman Login CasShop</h3> <!-- Konten lainnya -->
         </center>
     <div class="signup-card">
         <center>
             <h2>Sign Up</h2>
         </center>
         <form id="signupForm">
-            <label for="name">Name:</label>
+   <center> <label for="name">Name:</label>
             <br>
-            <input type="text" id="name" required><br><br>
-            <label for="username">Username:</label>
+         <center>  <input type="text" id="name" required><br><br>
+           
+            <label for="username">Username:</label><br>
             <input type="text" id="username" required><br><br>
-            <label for="password">Password:</label>
+            <label for="password">Password:</label><br>
             <input type="password" id="password" required><br><br>
+             </center>
             <button type="button" class="signup-button" onclick="createAccount()">Create Account</button>
             <div class="error-message" id="errorMessage"></div>
+            </center>
         </form>
+        <center>
+            <h5>
+            <p>&nbsp&nbspsudah punya akun klik untuk login&nbsp</p></h5>
+         <h5><a href="login.html">Login</a></h5>
+             </center>
     </div>
 
     <script>
-        function createAccount() {
-            var name = document.getElementById('name').value;
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
-            var errorMessage = document.getElementById('errorMessage');
+function saveDataToIndexedDB(user) {
+    var request = indexedDB.open("UserData", 1);
 
-            if (name && username && password) {
-                // Simpan data akun ke local storage
-                var user = {
-                    name: name,
-                    username: username,
-                    password: password
-                };
+    request.onupgradeneeded = function(event) {
+        var db = event.target.result;
+        var objectStore = db.createObjectStore("users", { keyPath: "username" });
+    };
 
-                localStorage.setItem('user', JSON.stringify(user));
-                alert('Account created successfully!');
-                window.location.href = 'login.html';
-            } else {
-                errorMessage.textContent = 'Harap lengkapi semua kolom.';
-            }
-        }
-    </script>
+    request.onsuccess = function(event) {
+        var db = event.target.result;
+        var transaction = db.transaction(["users"], "readwrite");
+        var objectStore = transaction.objectStore("users");
+
+        var addUserRequest = objectStore.put(user);
+
+        addUserRequest.onsuccess = function(event) {
+            console.log('Data saved to IndexedDB successfully!');
+        };
+
+        addUserRequest.onerror = function(event) {
+            console.error('Failed to save data to IndexedDB.');
+        };
+
+        // Menutup transaksi
+        transaction.oncomplete = function() {
+            db.close();
+        };
+    };
+
+    request.onerror = function(event) {
+        console.error('Failed to open IndexedDB.');
+    };
+}
+
+function saveDataToLocalStorage(user) {
+    localStorage.setItem('user', JSON.stringify(user));
+    console.log('Data saved to localStorage successfully!');
+}
+
+function createAccount() {
+    var name = document.getElementById('name').value;
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+    var errorMessage = document.getElementById('errorMessage');
+
+    if (name && username && password) {
+        var request = indexedDB.open("UserData", 1);
+
+        request.onupgradeneeded = function(event) {
+            var db = event.target.result;
+            var objectStore = db.createObjectStore("users", { keyPath: "username" });
+        };
+
+        request.onsuccess = function(event) {
+            var db = event.target.result;
+            var transaction = db.transaction(["users"], "readwrite");
+            var objectStore = transaction.objectStore("users");
+
+            // Mengecek apakah username sudah ada dalam basis data
+            var getUserRequest = objectStore.get(username);
+
+            getUserRequest.onsuccess = function(event) {
+                var storedUser = event.target.result;
+                if (storedUser) {
+                    errorMessage.textContent = 'Username sudah digunakan. Silakan pilih username lain.';
+                } else {
+                    // Jika username belum digunakan, simpan data pengguna ke object store
+                    var user = { name: name, username: username, password: password };
+                    saveDataToIndexedDB(user); // Simpan data ke IndexedDB
+                    saveDataToLocalStorage(user); // Simpan data ke localStorage sebagai cadangan
+
+                    alert('Account created successfully!');
+                    window.location.href = 'login.html';
+                }
+            };
+
+            getUserRequest.onerror = function(event) {
+                errorMessage.textContent = 'Gagal memeriksa username.';
+            };
+
+            // Menutup transaksi
+            transaction.oncomplete = function() {
+                db.close();
+            };
+        };
+
+        request.onerror = function(event) {
+            errorMessage.textContent = 'Gagal membuka database.';
+        };
+    } else {
+        errorMessage.textContent = 'Harap lengkapi semua kolom.';
+    }
+}
+
+</script>
+
 </body>
 
 </html>

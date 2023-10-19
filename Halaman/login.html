@@ -8,7 +8,11 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffffffcf;
+            background-image: url('latar.jpg');
+            background-size: cover; /* Untuk memastikan gambar meliputi seluruh latar belakang */
+    background-repeat: no-repeat; /* Menghindari pengulangan gambar */
+    background-position: center center; /* Posisi gambar di tengah-tengah latar belakang */
+
             color: #fff;
             margin: 0;
             padding: 0;
@@ -20,8 +24,9 @@
         }
 
         .login-card {
-            background-color: #222;
+            background-color: rgba(29, 29, 29, 0.7);
             color: #fff;
+            border: 3px solid #ff7e15;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -88,7 +93,7 @@
 
     <div class="text">
         <center>
-            <h3>Halaman Login CasShop</h3>
+            <h3 style="color: white; padding: 10px;">Halaman Login CasShop</h3>
         </center>
     </div>
 
@@ -108,30 +113,73 @@
                 <button type="button" onclick="login()" class="login-button">Login</button>
               <center> <div class="error-message" id="errorMessage"></div></center> 
             </form>
-           
+           <br>
         </div>
     </div>
+    <br>
+    <br>
 <script>
-   function login() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-    var errorMessage = document.getElementById('errorMessage');
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var errorMessage = document.getElementById('errorMessage');
 
-    if (username && password) {
-        // Lakukan logika login di sini jika input valid
-        var storedUser = JSON.parse(localStorage.getItem('user'));
-        if (storedUser && username === storedUser.username && password === storedUser.password) {
-            alert('Login successful!');
-            // Redirect ke halaman profil pengguna setelah login berhasil
-            window.location.href = 'profil.html';
-        } else {
-            errorMessage.textContent = 'Username atau password salah. Silakan coba lagi.';
+            // Buka database IndexedDB bernama "UserData"
+            var request = indexedDB.open("UserData", 1);
+
+            request.onupgradeneeded = function(event) {
+                var db = event.target.result;
+                // Membuat object store "users" untuk menyimpan data pengguna
+                var objectStore = db.createObjectStore("users", { keyPath: "username" });
+            };
+
+            request.onsuccess = function(event) {
+                var db = event.target.result;
+
+                // Membuka transaksi untuk object store "users"
+                var transaction = db.transaction(["users"], "readwrite");
+                var objectStore = transaction.objectStore("users");
+
+                // Mencari data pengguna berdasarkan username dari IndexedDB
+                var getUserRequest = objectStore.get(username);
+
+                getUserRequest.onsuccess = function(event) {
+                    var storedUser = event.target.result;
+                    if (storedUser && storedUser.password === password) {
+                        // Simpan data pengguna ke localStorage
+                        localStorage.setItem('user', JSON.stringify(storedUser));
+
+                        // Redirect ke halaman profil pengguna setelah login berhasil
+                        window.location.href = 'profil.html';
+                    } else {
+                        // Jika tidak ditemukan di IndexedDB, coba mencari di localStorage
+                        var storedUserLocalStorage = JSON.parse(localStorage.getItem('user'));
+                        if (storedUserLocalStorage && storedUserLocalStorage.username === username && storedUserLocalStorage.password === password) {
+                            // Redirect ke halaman profil pengguna setelah login berhasil
+                            window.location.href = 'profil.html';
+                        } else {
+                            errorMessage.textContent = 'Username atau password salah. Silakan coba lagi.';
+                        }
+                    }
+                };
+
+                getUserRequest.onerror = function(event) {
+                    errorMessage.textContent = 'Username atau password salah. Silakan coba lagi.';
+                };
+
+                // Menutup transaksi
+                transaction.oncomplete = function() {
+                    db.close();
+                };
+            };
+
+            request.onerror = function(event) {
+                errorMessage.textContent = 'Gagal membuka database.';
+            };
         }
-    } else {
-        errorMessage.textContent = 'Harap masukkan username dan password.';
-    }
-}
-</script>
+    </script>
 </body>
 
 </html>
+
+
