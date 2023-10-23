@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt'); // Untuk hashing kata sandi
 const app = express();
-const port = 4000;
 
 app.use(express.json()); // Middleware untuk meng-handle JSON data
 
@@ -50,9 +49,6 @@ app.post('/login', (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server berjalan di http://localhost:${port}`);
-});
 
 
 try {
