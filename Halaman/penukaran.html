@@ -2,7 +2,9 @@
 <html lang="en">
 
 <head>
-    <!-- Meta tags dan judul (sama seperti sebelumnya) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penukaran</title>
     
 
     <style>
@@ -124,9 +126,16 @@
         // Inisialisasi EmailJS dengan user ID Anda
         emailjs.init('m_cJTc3CBeWJutcZS');
 
-        // Mendapatkan jumlah koin dari local storage
-        var coinCount = parseInt(localStorage.getItem('coins')) || 0;
-        document.getElementById('coin-count').textContent = coinCount;
+        // Mendapatkan jumlah koin dari local storage dengan kunci yang sama
+var coinCount = parseInt(localStorage.getItem('coins')) || 0;
+document.getElementById('coin-count').textContent = coinCount;
+
+request.onupgradeneeded = function(event) {
+    var db = event.target.result;
+    // Membuat object store "users" untuk menyimpan data pengguna
+    var objectStore = db.createObjectStore("users", { keyPath: "username" });
+};
+
 
         function goBack() {
             // Mengarahkan kembali ke halaman profil pengguna
@@ -142,6 +151,9 @@
             var historyDiv = document.createElement("div");
             historyDiv.classList.add("history-item");
             var notes = '';
+            var transaction = db.transaction(["users"], "readwrite");
+var objectStore = transaction.objectStore("users");
+
 
             if (coinCount < 20 || coinInput <= 0 || coinInput % 20 !== 0) {
                 notes = 'Penukaran koin harus berjumlah kelipatan 20, tidak melebihi jumlah koin yang dimiliki, dan minimal 20 koin.';

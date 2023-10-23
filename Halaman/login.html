@@ -118,66 +118,39 @@
     </div>
     <br>
     <br>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
         function login() {
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
             var errorMessage = document.getElementById('errorMessage');
 
-            // Buka database IndexedDB bernama "UserData"
-            var request = indexedDB.open("UserData", 1);
+            // Mengirim permintaan ke server untuk memeriksa informasi pengguna
+            axios.post('http://localhost:4000/login', {
+    username: username,
+    password: password,
+    name: name
+})
 
-            request.onupgradeneeded = function(event) {
-                var db = event.target.result;
-                // Membuat object store "users" untuk menyimpan data pengguna
-                var objectStore = db.createObjectStore("users", { keyPath: "username" });
-            };
 
-            request.onsuccess = function(event) {
-                var db = event.target.result;
+            .then(function(response) {
+                if (response && response.data && response.data.success) {
+                    // Simpan data pengguna ke localStorage
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
 
-                // Membuka transaksi untuk object store "users"
-                var transaction = db.transaction(["users"], "readwrite");
-                var objectStore = transaction.objectStore("users");
-
-                // Mencari data pengguna berdasarkan username dari IndexedDB
-                var getUserRequest = objectStore.get(username);
-
-                getUserRequest.onsuccess = function(event) {
-                    var storedUser = event.target.result;
-                    if (storedUser && storedUser.password === password) {
-                        // Simpan data pengguna ke localStorage
-                        localStorage.setItem('user', JSON.stringify(storedUser));
-
-                        // Redirect ke halaman profil pengguna setelah login berhasil
-                        window.location.href = 'profil.html';
-                    } else {
-                        // Jika tidak ditemukan di IndexedDB, coba mencari di localStorage
-                        var storedUserLocalStorage = JSON.parse(localStorage.getItem('user'));
-                        if (storedUserLocalStorage && storedUserLocalStorage.username === username && storedUserLocalStorage.password === password) {
-                            // Redirect ke halaman profil pengguna setelah login berhasil
-                            window.location.href = 'profil.html';
-                        } else {
-                            errorMessage.textContent = 'Username atau password salah. Silakan coba lagi.';
-                        }
-                    }
-                };
-
-                getUserRequest.onerror = function(event) {
+                    // Redirect ke halaman profil pengguna setelah login berhasil
+                    window.location.href = 'profil.html';
+                } else {
                     errorMessage.textContent = 'Username atau password salah. Silakan coba lagi.';
-                };
-
-                // Menutup transaksi
-                transaction.oncomplete = function() {
-                    db.close();
-                };
-            };
-
-            request.onerror = function(event) {
-                errorMessage.textContent = 'Gagal membuka database.';
-            };
+                }
+            })
+            .catch(function(error) {
+                errorMessage.textContent = 'Terjadi kesalahan saat mencoba masuk. Silakan coba lagi.';
+            });
         }
     </script>
+
+    
 </body>
 
 </html>

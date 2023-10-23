@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -76,6 +77,7 @@
     .error-message {
             color: #ff0000;
             margin-top: 10px;
+            font-size: 13px;
         }
          .text {
             color: #131313cf;
@@ -118,103 +120,51 @@
              </center>
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
     <script>
-function saveDataToIndexedDB(user) {
-    var request = indexedDB.open("UserData", 1);
-
-    request.onupgradeneeded = function(event) {
-        var db = event.target.result;
-        var objectStore = db.createObjectStore("users", { keyPath: "username" });
-    };
-
-    request.onsuccess = function(event) {
-        var db = event.target.result;
-        var transaction = db.transaction(["users"], "readwrite");
-        var objectStore = transaction.objectStore("users");
-
-        var addUserRequest = objectStore.put(user);
-
-        addUserRequest.onsuccess = function(event) {
-            console.log('Data saved to IndexedDB successfully!');
-        };
-
-        addUserRequest.onerror = function(event) {
-            console.error('Failed to save data to IndexedDB.');
-        };
-
-        // Menutup transaksi
-        transaction.oncomplete = function() {
-            db.close();
-        };
-    };
-
-    request.onerror = function(event) {
-        console.error('Failed to open IndexedDB.');
-    };
-}
-
-function saveDataToLocalStorage(user) {
-    localStorage.setItem('user', JSON.stringify(user));
-    console.log('Data saved to localStorage successfully!');
-}
-
-function createAccount() {
+        function createAccount() {
     var name = document.getElementById('name').value;
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
     var errorMessage = document.getElementById('errorMessage');
 
     if (name && username && password) {
-        var request = indexedDB.open("UserData", 1);
+        axios.post('http://localhost:4000/signup', {
+    username: username,
+    password: password,
+    name: name
+})
 
-        request.onupgradeneeded = function(event) {
-            var db = event.target.result;
-            var objectStore = db.createObjectStore("users", { keyPath: "username" });
-        };
-
-        request.onsuccess = function(event) {
-            var db = event.target.result;
-            var transaction = db.transaction(["users"], "readwrite");
-            var objectStore = transaction.objectStore("users");
-
-            // Mengecek apakah username sudah ada dalam basis data
-            var getUserRequest = objectStore.get(username);
-
-            getUserRequest.onsuccess = function(event) {
-                var storedUser = event.target.result;
-                if (storedUser) {
-                    errorMessage.textContent = 'Username sudah digunakan. Silakan pilih username lain.';
-                } else {
-                    // Jika username belum digunakan, simpan data pengguna ke object store
-                    var user = { name: name, username: username, password: password };
-                    saveDataToIndexedDB(user); // Simpan data ke IndexedDB
-                    saveDataToLocalStorage(user); // Simpan data ke localStorage sebagai cadangan
-
-                    alert('Account created successfully!');
-                    window.location.href = 'login.html';
-                }
-            };
-
-            getUserRequest.onerror = function(event) {
-                errorMessage.textContent = 'Gagal memeriksa username.';
-            };
-
-            // Menutup transaksi
-            transaction.oncomplete = function() {
-                db.close();
-            };
-        };
-
-        request.onerror = function(event) {
-            errorMessage.textContent = 'Gagal membuka database.';
-        };
+        .then(function(response) {
+            if (response && response.data) {
+                // Buat kunci unik untuk penyimpanan koin setiap pengguna
+                var coinCountKey = 'coins_' + username;
+                // Set jumlah awal koin ke 0 saat pengguna mendaftar
+                localStorage.setItem(coinCountKey, 0);
+                
+                alert(response.data.message);
+                window.location.href = 'login.html'; // Redirect ke halaman login setelah pendaftaran berhasil
+            } else {
+                errorMessage.textContent = 'Respon tidak valid dari server.';
+            }
+        })
+        .catch(function(error) {
+            if (error.response && error.response.data && error.response.data.error) {
+                errorMessage.textContent = 'Gagal membuat akun. ' + error.response.data.error;
+            } else {
+                errorMessage.textContent = 'Gagal membuat akun. Terjadi kesalahan pada server.';
+            }
+        });
     } else {
         errorMessage.textContent = 'Harap lengkapi semua kolom.';
     }
 }
 
-</script>
-
+    </script>
 </body>
 
 </html>
+
+
