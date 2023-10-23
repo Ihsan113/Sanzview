@@ -131,7 +131,7 @@
     var errorMessage = document.getElementById('errorMessage');
 
     if (name && username && password) {
-        axios.post('https://sanzview-github-io.vercel.app/signup', {
+        axios.post('/signup', {
     username: username,
     password: password,
     name: name
