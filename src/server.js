@@ -16,7 +16,7 @@ const dbConnection = mysql.createConnection({
   database: 'namadatabase', // Sesuaikan dengan nama basis data yang telah Anda buat
 });
 
-app.use(cors());
+app.use(cors({ origin: 'https://sanzview-github-io.vercel.app', credentials: true }));
 
 dbConnection.connect((err) => {
   if (err) {
