@@ -1,55 +1,93 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const bcrypt = require('bcrypt'); // Untuk hashing kata sandi
+const bcrypt = require('bcrypt');
+const mysql = require('mysql');
+
 const app = express();
+app.use(express.json());
+app.use(cookieParser()); // Menggunakan cookie-parser
 
-app.use(express.json()); // Middleware untuk meng-handle JSON data
-
-// Database sementara (simulasi)
-const users = [];
-
-// Pengaturan CORS untuk mengizinkan permintaan dari domain GitHub Pages
-const corsOptions = {
-  origin: 'https://sanzview-github-io.vercel.app',
-  optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
-
-app.post('/signup', (req, res) => {
-  const { username, password, name } = req.body;
-
-  // Validasi input
-  if (!username || !password || !name) {
-    return res.status(400).json({ error: 'Harap lengkapi semua field.' });
-  }
-
-  // Cek apakah username sudah ada
-  const existingUser = users.find(user => user.username === username);
-  if (existingUser) {
-    return res.status(400).json({ error: 'Username sudah digunakan.' });
-  }
-
-  // Hash kata sandi sebelum disimpan
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  const newUser = { username, password: hashedPassword, name, coins: 0 };
-  users.push(newUser);
-
-  return res.status(201).json({ message: 'Akun berhasil dibuat.' });
+// Koneksi ke database MySQL
+const dbConnection = mysql.createConnection({
+  host: 'localhost',
+  user: 'username',
+  password: 'password',
+  database: 'namadatabase', // Sesuaikan dengan nama basis data yang telah Anda buat
 });
 
+app.use(cors());
+
+dbConnection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MySQL database: ' + err.stack);
+    return;
+  }
+  console.log('Connected to MySQL database');
+});
+
+// Endpoint signup
+app.post('/signup', (req, res) => {
+  const { name, username, password } = req.body;
+
+  // Validasi apakah semua data yang diperlukan ada
+  if (!name || !username || !password) {
+    return res.status(400).json({ error: 'Harap lengkapi semua kolom.' });
+  }
+
+  // Hash password menggunakan bcrypt sebelum disimpan ke database
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  // Simpan pengguna ke database
+  const insertQuery = 'INSERT INTO users (name, username, password) VALUES (?, ?, ?)';
+  dbConnection.query(insertQuery, [name, username, hashedPassword], (err, results) => {
+    if (err) {
+      console.error('Error saving user to database: ' + err.stack);
+      return res.status(500).json({ error: 'Terjadi kesalahan pada server.' });
+    }
+
+    return res.status(201).json({ success: true, message: 'Akun berhasil dibuat.' });
+  });
+
+
+// Endpoint login
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  const user = users.find(user => user.username === username);
 
-  if (user && bcrypt.compareSync(password, user.password)) {
-    return res.status(200).json({ success: true, user, message: 'Login berhasil.' });
-  } else {
+  // Query database untuk verifikasi pengguna
+  const selectQuery = 'SELECT * FROM users WHERE username = ?';
+  dbConnection.query(selectQuery, [username], (err, results) => {
+    if (err) {
+      console.error('Error fetching user from database: ' + err.stack);
+      return res.status(500).json({ error: 'Terjadi kesalahan pada server.' });
+    }
+
+    if (results.length > 0) {
+      const user = results[0];
+      if (bcrypt.compareSync(password, user.password)) {
+        // Set cookie saat pengguna berhasil login
+        res.cookie('username', username, { maxAge: 900000, httpOnly: true }); // Cookie akan berakhir dalam 15 menit (900000 milidetik)
+        return res.status(200).json({ success: true, user: user, message: 'Login berhasil.' });
+      }
+    }
+
     return res.status(401).json({ success: false, message: 'Username atau password salah.' });
-  }
+  });
+});
+});
+// Endpoint untuk mendapatkan data pengguna dari cookie
+app.get('/profile', (req, res) => {
+  const username = req.cookies.username; // Mendapatkan nilai cookie
+
+  // Gunakan nilai cookie (username) untuk mendapatkan data pengguna dari database
+  // Query database dengan menggunakan nilai cookie (username) untuk mendapatkan data pengguna
+
+  // Kirim data pengguna ke klien
 });
 
-
+app.listen(4000, () => {
+  console.log('Server berjalan di port 4000');
+});
 
 try {
   // Kode server Anda di sini
