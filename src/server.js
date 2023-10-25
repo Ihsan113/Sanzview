@@ -28,26 +28,24 @@ dbConnection.connect((err) => {
 
 // Endpoint signup
 app.post('/signup', (req, res) => {
-  const { name, username, password } = req.body;
+  const { name, username, password, email } = req.body;
 
-  // Validasi apakah semua data yang diperlukan ada
-  if (!name || !username || !password) {
-    return res.status(400).json({ error: 'Harap lengkapi semua kolom.' });
+  // Validasi data, pastikan email tidak kosong
+  if (!email) {
+    return res.status(400).json({ error: 'Email cannot be empty.' });
   }
 
-  // Hash password menggunakan bcrypt sebelum disimpan ke database
-  const hashedPassword = bcrypt.hashSync(password, 10);
-
-  // Simpan pengguna ke database
-  const insertQuery = 'INSERT INTO users (name, username, password) VALUES (?, ?, ?)';
-  dbConnection.query(insertQuery, [name, username, hashedPassword], (err, results) => {
+  // Query untuk menyimpan pengguna ke database
+  const insertQuery = 'INSERT INTO users (name, username, password, email) VALUES (?, ?, ?, ?)';
+  dbConnection.query(insertQuery, [name, username, password, email], (err, result) => {
     if (err) {
       console.error('Error saving user to database: ' + err.stack);
       return res.status(500).json({ error: 'Terjadi kesalahan pada server.' });
     }
-
-    return res.status(201).json({ success: true, message: 'Akun berhasil dibuat.' });
+    console.log('User successfully saved to database.');
+    return res.status(200).json({ success: true, message: 'User successfully saved to database.' });
   });
+
 
 
 // Endpoint login
