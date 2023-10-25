@@ -129,12 +129,14 @@
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
     var errorMessage = document.getElementById('errorMessage');
+    var email = document.getElementById('email').value;
 
     if (name && username && password) {
         axios.post('http://localhost:4000/signup', {
-    username: username,
+            username: username,
     password: password,
-    name: name
+    name: name,
+    email: email
 })
 
         .then(function(response) {
