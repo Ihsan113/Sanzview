@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Redeem Codes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #codesTable {
+            width: 50%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        #codesTable th, #codesTable td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        #codesTable th {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        #newCodeInput {
+            padding: 8px;
+        }
+
+        #createButton {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #createButton:hover {
+            background-color: #45a049;
+        }
+
+        .deleteButton {
+            padding: 8px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .deleteButton:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Admin Redeem Codes</h2>
+    
+    <input type="text" id="newCodeInput" placeholder="Masukkan Kode Unik" />
+    <button id="createButton" onclick="createCode()">Buat Kode</button>
+
+    <table id="codesTable">
+        <thead>
+            <tr>
+                <th>Kode Unik</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="codesBody">
+            <!-- Data Kode akan muncul di sini -->
+        </tbody>
+    </table>
+
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+
+    <script>
+        // Inisialisasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAREEgVnS1M_JgvThBKIBw-vP_t6WJgs7U",
+            authDomain: "poco-m5-dd083.firebaseapp.com",
+            databaseURL: "https://poco-m5-dd083-default-rtdb.firebaseio.com",
+            projectId: "poco-m5-dd083",
+            storageBucket: "poco-m5-dd083.appspot.com",
+            messagingSenderId: "590036832627",
+            appId: "1:590036832627:web:a9c27ddbd9e1db309db506",
+            measurementId: "G-LGWN38TY4K"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function createCode() {
+            const newCodeInput = document.getElementById('newCodeInput');
+            const newCode = newCodeInput.value.trim();
+
+            if (newCode) {
+                // Tambahkan kode baru ke Firestore
+                db.collection('redeemCodes').doc(newCode).set({
+                    used: false
+                })
+                .then(() => {
+                    // Bersihkan input setelah membuat kode
+                    newCodeInput.value = '';
+                    // Muat ulang tabel
+                    loadCodes();
+                })
+                .catch((error) => {
+                    console.error('Gagal membuat kode:', error);
+                });
+            }
+        }
+
+        function loadCodes() {
+            const codesTableBody = document.getElementById('codesBody');
+
+            // Hapus semua baris tabel sebelum memuat data baru
+            while (codesTableBody.firstChild) {
+                codesTableBody.removeChild(codesTableBody.firstChild);
+            }
+
+            // Ambil data dari Firestore
+            db.collection('redeemCodes').get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const codeData = doc.data();
+                        const codeRow = document.createElement('tr');
+                        const codeCell = document.createElement('td');
+                        const statusCell = document.createElement('td');
+                        const actionCell = document.createElement('td');
+                        const deleteButton = document.createElement('button');
+
+                        codeCell.textContent = doc.id; // Kode Unik
+                        statusCell.textContent = codeData.used ? 'Terpakai' : 'Belum Terpakai'; // Status
+                        deleteButton.textContent = 'Hapus';
+                        deleteButton.className = 'deleteButton';
+                        deleteButton.addEventListener('click', () => deleteCode(doc.id));
+
+                        codeRow.appendChild(codeCell);
+                        codeRow.appendChild(statusCell);
+                        actionCell.appendChild(deleteButton);
+                        codeRow.appendChild(actionCell);
+                        codesTableBody.appendChild(codeRow);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Gagal memuat kode:', error);
+                });
+        }
+
+        function deleteCode(code) {
+            // Hapus dokumen berdasarkan ID (kode)
+            db.collection('redeemCodes').doc(code).delete()
+                .then(() => {
+                    console.log('Kode berhasil dihapus.');
+                    // Muat ulang tabel setelah menghapus
+                    loadCodes();
+                })
+                .catch((error) => {
+                    console.error('Gagal menghapus kode:', error);
+                });
+        }
+
+        // Panggil fungsi loadCodes saat halaman dimuat
+        loadCodes();
+    </script>
+</body>
+
+</html>
